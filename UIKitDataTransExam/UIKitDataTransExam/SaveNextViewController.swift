@@ -7,84 +7,32 @@
 
 import UIKit
 
-class SaveNextViewController: UIViewController {
+``class SaveNextViewController: UIViewController {
     
-    let emailLabel: UILabel = {
-        let label = UILabel()
-        label.text = "이메일"
-        label.textAlignment = .left
-        return label
-    }()
+    let emailLabel = createLabel(withText: "이메일")
+    let emailText = createLabel(textAlignment: .center)
     
-    let emailText: UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.textAlignment = .center
-        return label
-    }()
+    let autoUpdateLabel = createLabel(withText: "자동 갱신")
+    let autoUpdateText = createLabel(textAlignment: .center)
     
-    let autoUpdateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "자동 갱신"
-        label.textAlignment = .left
-        return label
-    }()
+    let updateIntervalLabel = createLabel(withText: "갱신 주기")
+    let updateIntervalText = createLabel(textAlignment: .center)
     
-    let autoUpdateText: UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.textAlignment = .center
-        return label
-    }()
-    
-    let updateIntervalLabel: UILabel = {
-        let label = UILabel()
-        label.text = "갱신 주기"
-        label.textAlignment = .left
-        return label
-    }()
-    
-    let updateIntervalText: UILabel = {
-        let label = UILabel()
-        label.text = "0분마다"
-        label.textAlignment = .center
-        return label
-    }()
-    
-    let backButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Back", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 20
-        return button
-    }()
+    let backButton = createButton(withTitle: "Back", cornerRadius: 20)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupUI()
         setupValue()
-        // Do any additional setup after loading the view.
     }
     
     func setupUI() {
-        let stack1 = UIStackView(arrangedSubviews: [emailLabel, emailText])
-        stack1.axis = .horizontal
-        stack1.spacing = 20
+        let stack1 = SaveNextViewController.createHorizontalStackView(arrangedSubviews: [emailLabel, emailText])
+        let stack2 = SaveNextViewController.createHorizontalStackView(arrangedSubviews: [autoUpdateLabel, autoUpdateText])
+        let stack3 = SaveNextViewController.createHorizontalStackView(arrangedSubviews: [updateIntervalLabel, updateIntervalText])
         
-        let stack2 = UIStackView(arrangedSubviews: [autoUpdateLabel, autoUpdateText])
-        stack2.axis = .horizontal
-        stack2.spacing = 20
-        
-        let stack3 = UIStackView(arrangedSubviews: [updateIntervalLabel, updateIntervalText])
-        stack3.axis = .horizontal
-        stack3.spacing = 20
-        
-        let mainStack = UIStackView(arrangedSubviews: [stack1, stack2, stack3, backButton])
-        mainStack.axis = .vertical
-        mainStack.spacing = 20
-        mainStack.alignment = .fill
-        mainStack.distribution = .fill
+        let mainStack = SaveNextViewController.createVerticalStackView(arrangedSubviews: [stack1, stack2, stack3, backButton])
         view.addSubview(mainStack)
         
         mainStack.translatesAutoresizingMaskIntoConstraints = false
@@ -105,19 +53,49 @@ class SaveNextViewController: UIViewController {
     func setupValue() {
         let ad = UIApplication.shared.delegate as? AppDelegate
         
-        emailText.text = ad?.paramEmail
-        updateIntervalText.text = "\(Int(ad?.paramInterval ?? 0))분마다"
-        autoUpdateText.text = (ad?.paramUpdate ?? true) ? "자동 갱신" : "수동 갱신"
+        if let email = ad?.paramEmail {
+            emailText.text = email
+        }
+        
+        if let update = ad?.paramInterval {
+            updateIntervalText.text = "\(Int(update))분마다"
+        }
+        
+        if let auto = ad?.paramUpdate {
+            autoUpdateText.text = auto ? "자동 갱신" : "수동 갱신"
+        }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // Helper methods (moved from your original code)
+    static func createLabel(withText text: String? = nil, textAlignment: NSTextAlignment = .left) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.textAlignment = textAlignment
+        return label
     }
-    */
-
+    
+    static func createButton(withTitle title: String, cornerRadius: CGFloat) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = cornerRadius
+        return button
+    }
+    
+    static func createHorizontalStackView(arrangedSubviews: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .horizontal
+        stackView.spacing = 20
+        return stackView
+    }
+    
+    static func createVerticalStackView(arrangedSubviews: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        return stackView
+    }
 }
+
