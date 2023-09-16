@@ -9,104 +9,37 @@ import UIKit
 
 class ViewController: UIViewController, UITextFieldDelegate {
 
-    let emailLabel: UILabel = {
-        let label = UILabel()
-        label.text = "이메일"
-        label.textAlignment = .left
-        return label
-    }()
+    // UI 요소들 정의
+    let emailLabel = createLabel(withText: "이메일")
+    let emailTextField = createTextField(withPlaceholder: "이메일을 입력하세요", keyboardType: .emailAddress)
     
-    let emailTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "이메일을 입력하세요"
-        textField.keyboardType = .emailAddress
-        textField.borderStyle = .roundedRect
-        return textField
-    }()
+    let autoUpdateLabel = createLabel(withText: "자동 갱신")
+    let autoUpdateText = createLabel(withText: "자동 갱신", textAlignment: .center)
+    let autoUpdateSwitch = UISwitch()
     
-    let autoUpdateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "자동 갱신"
-        label.textAlignment = .left
-        return label
-    }()
+    let updateIntervalLabel = createLabel(withText: "갱신 주기")
+    let updateIntervalText = createLabel(withText: "0분마다", textAlignment: .center)
+    let updateIntervalStepper = createStepper()
     
-    let autoUpdateText: UILabel = {
-        let label = UILabel()
-        label.text = "자동 갱신"
-        label.textAlignment = .center
-        return label
-    }()
-    
-    
-    let autoUpdateSwitch: UISwitch = {
-        let switchControl = UISwitch()
-        switchControl.isOn = true
-        return switchControl
-    }()
-    
-    let updateIntervalLabel: UILabel = {
-        let label = UILabel()
-        label.text = "갱신 주기"
-        label.textAlignment = .left
-        return label
-    }()
-    
-    let updateIntervalText: UILabel = {
-        let label = UILabel()
-        label.text = "0분마다"
-        label.textAlignment = .center
-        return label
-    }()
-    
-    let updateIntervalStepper: UIStepper = {
-        let stepper = UIStepper()
-        stepper.minimumValue = 0
-        stepper.maximumValue = 60
-        stepper.stepValue = 1
-        return stepper
-    }()
-    
-    let submitButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Submit", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 20
-        return button
-    }()
-    
+    let submitButton = createButton(withTitle: "Submit", backgroundColor: .systemPink, cornerRadius: 20)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupUI()
         
-        //TextField Delegate Setting
         emailTextField.delegate = self
     }
     
     func setupUI() {
-        let stack1 = UIStackView(arrangedSubviews: [emailLabel, emailTextField])
-        stack1.axis = .horizontal
-        stack1.spacing = 20
+        let stack1 = ViewController.createHorizontalStackView(arrangedSubviews: [emailLabel, emailTextField])
+        let stack2 = ViewController.createHorizontalStackView(arrangedSubviews: [autoUpdateLabel, autoUpdateText, autoUpdateSwitch])
+        let stack3 = ViewController.createHorizontalStackView(arrangedSubviews: [updateIntervalLabel, updateIntervalText, updateIntervalStepper])
         
-        let stack2 = UIStackView(arrangedSubviews: [autoUpdateLabel, autoUpdateText, autoUpdateSwitch])
-        stack2.axis = .horizontal
-        stack2.spacing = 20
+        let mainStack = ViewController.createVerticalStackView(arrangedSubviews: [stack1, stack2, stack3, submitButton])
         
-        let stack3 = UIStackView(arrangedSubviews: [updateIntervalLabel, updateIntervalText, updateIntervalStepper])
-        stack3.axis = .horizontal
-        stack3.spacing = 20
-        
-        let mainStack = UIStackView(arrangedSubviews: [stack1, stack2, stack3])
-        mainStack.axis = .vertical
-        mainStack.spacing = 20
-        mainStack.alignment = .fill
-        mainStack.distribution = .fill
         view.addSubview(mainStack)
-        view.addSubview(submitButton)
-        
         mainStack.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -118,7 +51,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         updateIntervalStepper.addTarget(self, action: #selector(updateIntervalChanged), for: .valueChanged)
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
-        autoUpdateSwitch.addTarget(self, action: #selector(onUpdateSwitch), for: .touchUpInside)
+        autoUpdateSwitch.addTarget(self, action: #selector(onUpdateSwitch), for: .valueChanged)
     }
     
     @objc func updateIntervalChanged() {
@@ -127,7 +60,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func submitButtonTapped() {
-        // Handle submit button tap event
         let nextViewController = NextViewController()
         
         nextViewController.emailTextValue = emailTextField.text
@@ -135,27 +67,70 @@ class ViewController: UIViewController, UITextFieldDelegate {
         nextViewController.updateIntervalTextValue = updateIntervalText.text
         
         navigationController?.pushViewController(nextViewController, animated: true)
-        
     }
     
-    @objc func onUpdateSwitch(_ sender: UISwitch) {
-        if sender.isOn {
-            self.autoUpdateText.text = "자동 갱신"
-        } else {
-            self.autoUpdateText.text = "수동 갱신"
-        }
+    @objc func onUpdateSwitch() {
+        let switchText = autoUpdateSwitch.isOn ? "자동 갱신" : "수동 갱신"
+        autoUpdateText.text = switchText
     }
     
+    // UITextFieldDelegate 메서드
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // 리턴 키를 눌렀을 때 호출되는 메서드
-        // 여기서 키보드를 숨깁니다.
         textField.resignFirstResponder()
         return true
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // 화면의 다른 부분을 탭했을 때 호출되는 메서드
-        // 여기서 키보드를 숨깁니다.
         view.endEditing(true)
     }
+    
+    // Helper 메서드
+    static func createLabel(withText text: String, textAlignment: NSTextAlignment = .left) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.textAlignment = textAlignment
+        return label
+    }
+    
+    static func createTextField(withPlaceholder placeholder: String, keyboardType: UIKeyboardType) -> UITextField {
+        let textField = UITextField()
+        textField.placeholder = placeholder
+        textField.keyboardType = keyboardType
+        textField.borderStyle = .roundedRect
+        return textField
+    }
+    
+    static func createStepper() -> UIStepper {
+        let stepper = UIStepper()
+        stepper.minimumValue = 0
+        stepper.maximumValue = 60
+        stepper.stepValue = 1
+        return stepper
+    }
+    
+    static func createButton(withTitle title: String, backgroundColor: UIColor, cornerRadius: CGFloat) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.backgroundColor = backgroundColor
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = cornerRadius
+        return button
+    }
+    
+    static func createHorizontalStackView(arrangedSubviews: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .horizontal
+        stackView.spacing = 20
+        return stackView
+    }
+    
+    static func createVerticalStackView(arrangedSubviews: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        return stackView
+    }
 }
+
