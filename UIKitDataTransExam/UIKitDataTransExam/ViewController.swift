@@ -52,6 +52,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         updateIntervalStepper.addTarget(self, action: #selector(updateIntervalChanged), for: .valueChanged)
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         autoUpdateSwitch.addTarget(self, action: #selector(onUpdateSwitch), for: .valueChanged)
+        autoUpdateSwitch.isOn = true
     }
     
     @objc func updateIntervalChanged() {
