@@ -87,7 +87,7 @@ extension ViewController {
     }
     
     /**
-     기본 알림창(취소만 있는 것)의 액션 메서드
+     기본 알림창(취소, 확인이 있는 것)의 액션 메서드
     */
     @objc func showAlert2() {
         let alert = UIAlertController(
