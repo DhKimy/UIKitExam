@@ -46,36 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
      이러한 때에 메서드가 호출된다.
      */
     func applicationWillResignActive(_ application: UIApplication) {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus == UNAuthorizationStatus.authorized {
-                // 알림 컨텐츠 객체
-                let nContent = UNMutableNotificationContent()
-                nContent.badge = 1
-                nContent.title = "로컬 알림 메시지"
-                nContent.subtitle = "준비된 내용이 많아요. 앱을 다시 열어주세요."
-                nContent.body = "왜나갔어요 다시 들어와요"
-                nContent.sound = UNNotificationSound.default
-                nContent.userInfo = ["name": "배찌"]
-                
-                // 알림 발송 조건 객체
-                let trigger = UNTimeIntervalNotificationTrigger(
-                    timeInterval: 5,
-                    repeats: false
-                )
-                
-                // 알림 요청 객체
-                let request = UNNotificationRequest(
-                    identifier: "wakeup",
-                    content: nContent,
-                    trigger: trigger
-                )
-                
-                // Notification Center에 추가
-                UNUserNotificationCenter.current().add(request)
-            } else {
-                print("사용자 알림 미동의")
-            }
-        }
+        
     }
     
     // 사용자가 알림 메시지를 클릭했을 경우

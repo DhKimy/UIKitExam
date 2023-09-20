@@ -7,7 +7,7 @@
 
 import UIKit
 
-``class SaveNextViewController: UIViewController {
+class SaveNextViewController: UIViewController {
     
     let emailLabel = createLabel(withText: "이메일")
     let emailText = createLabel(textAlignment: .center)

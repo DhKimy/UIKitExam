@@ -1,8 +1,8 @@
 //
 //  SceneDelegate.swift
-//  UIKitNotificationExam
+//  UIKitTextFieldExam
 //
-//  Created by 김동현 on 2023/09/17.
+//  Created by 김동현 on 2023/09/20.
 //
 
 import UIKit
@@ -11,17 +11,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.windowScene = windowScene
-        window?.rootViewController = ViewController()
-        window?.makeKeyAndVisible()
-        
-        
+        guard let _ = (scene as? UIWindowScene) else { return }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -37,36 +32,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus == UNAuthorizationStatus.authorized {
-                // 알림 컨텐츠 객체
-                let nContent = UNMutableNotificationContent()
-                nContent.badge = 1
-                nContent.title = "로컬 알림 메시지"
-                nContent.subtitle = "준비된 내용이 많아요. 앱을 다시 열어주세요."
-                nContent.body = "왜나갔어요 다시 들어와요"
-                nContent.sound = UNNotificationSound.default
-                nContent.userInfo = ["name": "배찌"]
-                
-                // 알림 발송 조건 객체
-                let trigger = UNTimeIntervalNotificationTrigger(
-                    timeInterval: 5,
-                    repeats: false
-                )
-                
-                // 알림 요청 객체
-                let request = UNNotificationRequest(
-                    identifier: "wakeup",
-                    content: nContent,
-                    trigger: trigger
-                )
-                
-                // Notification Center에 추가
-                UNUserNotificationCenter.current().add(request)
-            } else {
-                print("사용자 알림 미동의")
-            }
-        }
+        // Called when the scene will move from an active state to an inactive state.
+        // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {

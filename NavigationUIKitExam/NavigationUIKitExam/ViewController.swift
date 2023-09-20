@@ -21,7 +21,6 @@ class ViewController: UIViewController {
 
 // Button 관련 extension
 extension ViewController {
-    
     func topButtonShow() {
         let presentMoveButton = UIButton(type: .system)
         presentMoveButton.setTitle("Present 방식으로 이동", for: .normal)
